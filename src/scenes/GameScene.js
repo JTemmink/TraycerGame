@@ -16,14 +16,26 @@ export default class GameScene extends Phaser.Scene {
   }
 
   preload() {
-    // Placeholder assets generated in Bird.js and Pipe.js constructors
-    // Phase 5 will load real sprites here
+    // Load sprites from Kenney.nl Flappy Bird pack
+    this.load.image('bird', 'assets/sprites/bird.png');
+    this.load.image('pipe-top', 'assets/sprites/pipe-top.png');
+    this.load.image('pipe-bottom', 'assets/sprites/pipe-bottom.png');
+    this.load.image('background', 'assets/sprites/background.png');
+    
+    // Load sound effects
+    this.load.audio('jump', 'assets/sounds/jump.wav');
+    this.load.audio('correct', 'assets/sounds/correct.wav');
+    this.load.audio('wrong', 'assets/sounds/wrong.wav');
+    this.load.audio('crash', 'assets/sounds/crash.wav');
   }
 
   async create() {
     // Initialize game state
     this.gameState = GAME_STATES.PLAYING;
-    this.currentDifficulty = DIFFICULTY.EASY;
+    
+    // Get difficulty from registry (set by MenuScene)
+    const difficultyKey = this.registry.get('difficulty') || 'easy';
+    this.currentDifficulty = DIFFICULTY[difficultyKey.toUpperCase()];
     this.pipeSpawnTimer = 0;
     this.respawnTimer = 0;
 
@@ -32,12 +44,12 @@ export default class GameScene extends Phaser.Scene {
     await ScoreManager.init();
     this.wordManager = WordManager.getInstance();
     this.scoreManager = ScoreManager.getInstance();
-    this.scoreManager.setDifficulty('easy');
+    this.scoreManager.setDifficulty(difficultyKey);
     this.currentPlayer = null;
     this.scoreText = null;
 
-    // Create sky blue background
-    this.add.rectangle(400, 300, 800, 600, 0x87CEEB).setDepth(-1);
+    // Create background
+    this.add.image(400, 300, 'background').setDepth(-1);
 
     // Create score display
     this.scoreText = this.add.text(20, 20, 'Score: 0', { 
@@ -94,7 +106,7 @@ export default class GameScene extends Phaser.Scene {
         console.warn('No authenticated user, using random word selection');
       } else {
         // Initialize adaptive session for authenticated users
-        await this.wordManager.initializeSession(this.currentPlayer.id, 'easy');
+        await this.wordManager.initializeSession(this.currentPlayer.id, difficultyKey);
         console.log('Adaptive session initialized for player:', this.currentPlayer.username);
       }
       
@@ -223,6 +235,7 @@ export default class GameScene extends Phaser.Scene {
   onJump() {
     if (this.gameState === GAME_STATES.PLAYING) {
       this.bird.jump(this.currentDifficulty.jumpVelocity);
+      this.sound.play('jump');
     }
   }
 
@@ -275,8 +288,8 @@ export default class GameScene extends Phaser.Scene {
    */
   showCorrectFeedback(pipe) {
     // Add green tint to pipe children
-    pipe.topPipe.setFillStyle(FEEDBACK_COLORS.CORRECT);
-    pipe.bottomPipe.setFillStyle(FEEDBACK_COLORS.CORRECT);
+    pipe.topPipe.setTint(FEEDBACK_COLORS.CORRECT);
+    pipe.bottomPipe.setTint(FEEDBACK_COLORS.CORRECT);
     
     // Create scale pulse tween
     this.tweens.add({
@@ -287,10 +300,11 @@ export default class GameScene extends Phaser.Scene {
       yoyo: true,
       ease: 'Sine.easeInOut',
       onComplete: () => {
-        pipe.topPipe.setFillStyle(COLORS.PIPE_TOP);
-        pipe.bottomPipe.setFillStyle(COLORS.PIPE_BOTTOM);
+        pipe.topPipe.clearTint();
+        pipe.bottomPipe.clearTint();
       }
     });
+    this.sound.play('correct');
   }
 
   /**
@@ -299,8 +313,8 @@ export default class GameScene extends Phaser.Scene {
    */
   showWrongFeedback(pipe) {
     // Add red tint to pipe children
-    pipe.topPipe.setFillStyle(FEEDBACK_COLORS.WRONG);
-    pipe.bottomPipe.setFillStyle(FEEDBACK_COLORS.WRONG);
+    pipe.topPipe.setTint(FEEDBACK_COLORS.WRONG);
+    pipe.bottomPipe.setTint(FEEDBACK_COLORS.WRONG);
     
     // Create shake tween
     const originalX = pipe.x;
@@ -313,10 +327,11 @@ export default class GameScene extends Phaser.Scene {
       ease: 'Sine.easeInOut',
       onComplete: () => {
         pipe.x = originalX;
-        pipe.topPipe.setFillStyle(COLORS.PIPE_TOP);
-        pipe.bottomPipe.setFillStyle(COLORS.PIPE_BOTTOM);
+        pipe.topPipe.clearTint();
+        pipe.bottomPipe.clearTint();
       }
     });
+    this.sound.play('wrong');
   }
 
   /**
@@ -327,6 +342,7 @@ export default class GameScene extends Phaser.Scene {
     
     this.gameState = GAME_STATES.CRASHED;
     this.bird.die();
+    this.sound.play('crash');
     console.log('Bird crashed!');
   }
 
@@ -345,7 +361,7 @@ export default class GameScene extends Phaser.Scene {
   triggerGameOver() {
     // Get final stats from ScoreManager
     const stats = this.scoreManager.getStats();
-    stats.difficulty = 'easy'; // Store as string instead of object
+    stats.difficulty = this.registry.get('difficulty') || 'easy'; // Store as string instead of object
     stats.playerId = this.currentPlayer?.id || null;
     
     // Stop the scene and start GameOverScene

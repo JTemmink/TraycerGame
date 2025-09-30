@@ -6,22 +6,8 @@ import { GAME_CONFIG, PHYSICS, COLORS } from '../utils/constants.js';
  */
 export default class Bird extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
-    // Call parent constructor with no texture key (using generated texture)
-    super(scene, x, y, null);
-    
-    // Create bird visual using Graphics
-    const graphics = scene.add.graphics();
-    graphics.fillStyle(COLORS.BIRD);
-    graphics.fillCircle(20, 20, 20); // Circle with radius 20
-    graphics.lineStyle(2, 0x000000); // Black outline
-    graphics.strokeCircle(20, 20, 20);
-    
-    // Generate texture from graphics
-    graphics.generateTexture('bird-placeholder', 40, 40);
-    graphics.destroy(); // Clean up graphics object
-    
-    // Set the generated texture
-    this.setTexture('bird-placeholder');
+    // Call parent constructor with bird sprite
+    super(scene, x, y, 'bird');
     
     // Add to scene and enable physics
     scene.add.existing(this);

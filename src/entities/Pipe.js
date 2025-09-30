@@ -23,25 +23,21 @@ export default class Pipe extends Phaser.GameObjects.Container {
     const topHeight = gapY - gapSize / 2;
     const bottomHeight = scene.scale.height - (gapY + gapSize / 2);
     
-    // Create top pipe rectangle
-    this.topPipe = scene.add.rectangle(
+    // Create top pipe sprite
+    this.topPipe = scene.add.image(
       0, // x position relative to container
       gapY - gapSize / 2 - topHeight / 2, // y position
-      GAME_CONFIG.pipeWidth,
-      topHeight,
-      COLORS.PIPE_TOP
+      'pipe-top'
     );
-    this.topPipe.setStrokeStyle(3, COLORS.PIPE_OUTLINE);
+    this.topPipe.setDisplaySize(GAME_CONFIG.pipeWidth, topHeight);
     
-    // Create bottom pipe rectangle
-    this.bottomPipe = scene.add.rectangle(
+    // Create bottom pipe sprite
+    this.bottomPipe = scene.add.image(
       0, // x position relative to container
       gapY + gapSize / 2 + bottomHeight / 2, // y position
-      GAME_CONFIG.pipeWidth,
-      bottomHeight,
-      COLORS.PIPE_BOTTOM
+      'pipe-bottom'
     );
-    this.bottomPipe.setStrokeStyle(3, COLORS.PIPE_OUTLINE);
+    this.bottomPipe.setDisplaySize(GAME_CONFIG.pipeWidth, bottomHeight);
     
     // Create text labels for word display
     this.topText = scene.add.text(0, gapY - gapSize/2 - 60, '', TEXT_STYLE);
@@ -93,11 +89,11 @@ export default class Pipe extends Phaser.GameObjects.Container {
     const bottomHeight = this.scene.scale.height - (gapY + gapSize / 2);
     
     // Update top pipe
-    this.topPipe.setSize(GAME_CONFIG.pipeWidth, topHeight);
+    this.topPipe.setDisplaySize(GAME_CONFIG.pipeWidth, topHeight);
     this.topPipe.setPosition(0, gapY - gapSize / 2 - topHeight / 2);
     
     // Update bottom pipe
-    this.bottomPipe.setSize(GAME_CONFIG.pipeWidth, bottomHeight);
+    this.bottomPipe.setDisplaySize(GAME_CONFIG.pipeWidth, bottomHeight);
     this.bottomPipe.setPosition(0, gapY + gapSize / 2 + bottomHeight / 2);
     
     // Update text positions
