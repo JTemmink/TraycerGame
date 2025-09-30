@@ -178,3 +178,5 @@ MIT License (or specify your license)
 - Database: Supabase
 - Target audience: Children ages 8-11 learning Dutch spelling
 
+*Last updated: Ready for Vercel deployment*
+
