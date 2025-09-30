@@ -37,7 +37,8 @@ export default class Bird extends Phaser.Physics.Arcade.Sprite {
     
     // Scale bird for better visibility (original sprite is 34x24px)
     this.setScale(1.5);
-    this.body.setSize(34, 24);
+    // Update physics body to match scaled sprite size
+    this.body.setSize(34 * 1.5, 24 * 1.5);
     
     // Initialize state
     this.isAlive = true;

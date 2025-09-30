@@ -23,6 +23,8 @@ export default defineConfig({
     alias: {
       '@': '/src'
     }
-  }
+  },
+  publicDir: 'public',
+  assetsInclude: ['**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.gif', '**/*.svg', '**/*.ogg', '**/*.wav', '**/*.mp3']
 })
 
