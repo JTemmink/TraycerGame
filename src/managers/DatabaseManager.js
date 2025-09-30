@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js'
  * DatabaseManager - Singleton class for all Supabase database operations
  * Provides a clean abstraction layer for database interactions
  */
-export class DatabaseManager {
+class DatabaseManager {
     static #instance = null
 
     constructor() {

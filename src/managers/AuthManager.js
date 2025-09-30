@@ -1,11 +1,11 @@
 import { createClient } from '@supabase/supabase-js'
-import { DatabaseManager } from './DatabaseManager.js'
+import DatabaseManager from './DatabaseManager.js'
 
 /**
  * AuthManager - Singleton class for handling Supabase authentication
  * Provides a clean API for user authentication and session management
  */
-export class AuthManager {
+class AuthManager {
     static #instance = null
     #currentUser = null
 

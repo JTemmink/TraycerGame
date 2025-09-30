@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
-import { DatabaseManager } from './managers/DatabaseManager.js'
-import { AuthManager } from './managers/AuthManager.js'
+import DatabaseManager from './managers/DatabaseManager.js'
+import AuthManager from './managers/AuthManager.js'
 import MenuScene from './scenes/MenuScene.js'
 import GameScene from './scenes/GameScene.js'
 import GameOverScene from './scenes/GameOverScene.js'
